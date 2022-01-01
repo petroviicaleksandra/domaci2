@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use App\Http\Resources\TicketResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\PostDec;
 
 class TicketController extends Controller
 {
@@ -14,7 +18,8 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = Ticket::all();
+        return TicketResource::collection($tickets);
     }
 
     /**
@@ -35,7 +40,23 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|string|max:50',
+            'movie_id' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $movie = Ticket::create([
+            'name' => $request->name,
+            'duration' => $request->duration,
+            'genre_id' => $request->genre_id,
+            'user_id' => Auth::user()->id
+        ]);
+        return response()->json(['Ticket created successfully!', new TicketResource($movie)]);
     }
 
     /**
@@ -44,9 +65,10 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show($id)
     {
-        //
+        $ticket = Ticket::find($id);
+        return new TicketResource($ticket);
     }
 
     /**
@@ -69,7 +91,21 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|string|max:50',
+            'movie_id' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $ticket->id = $request->id;
+        $ticket->movie_id = $request->movie_id;
+        $ticket->user_id = $request->user_id;
+        $ticket->save();
+        return response()->json(['Ticket updated successfully!', new TicketResource($ticket)]);
     }
 
     /**
@@ -80,6 +116,6 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        //
-    }
+        $ticket->delete();
+        return response()->json('Ticket deleted successfully!');    }
 }

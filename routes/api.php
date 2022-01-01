@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\MovieController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserTicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +20,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::resource('/ticket', TicketController::class);
+Route::resource('/users', UserController::class);
+Route::get('/movies', [MovieController::class, 'index']);
+Route::get('/users/{id}/tickets', [UserTicketController::class, 'index'])->name('users.ticket.index');
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function (request $request) {
+        return auth()->user();
+    });
+    Route::resource('movies', TicketController::class)->only(['update', 'store', 'destroy']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
