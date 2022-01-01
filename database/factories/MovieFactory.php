@@ -14,7 +14,8 @@ class MovieFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->word,
+            'duration' => $this->faker->numberBetween(90,180)
         ];
     }
 }
