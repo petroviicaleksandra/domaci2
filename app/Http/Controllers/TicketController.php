@@ -22,15 +22,6 @@ class TicketController extends Controller
         return TicketResource::collection($tickets);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -50,13 +41,12 @@ class TicketController extends Controller
             return response()->json($validator->errors());
         }
 
-        $movie = Ticket::create([
-            'name' => $request->name,
-            'duration' => $request->duration,
-            'genre_id' => $request->genre_id,
+        $ticket = Ticket::create([
+            'id' => $request->id,
+            'movie_id' => $request->movie_id,
             'user_id' => Auth::user()->id
         ]);
-        return response()->json(['Ticket created successfully!', new TicketResource($movie)]);
+        return response()->json(['Ticket created successfully!', new TicketResource($ticket)]);
     }
 
     /**
@@ -71,16 +61,7 @@ class TicketController extends Controller
         return new TicketResource($ticket);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Ticket $ticket)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -117,5 +98,6 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         $ticket->delete();
-        return response()->json('Ticket deleted successfully!');    }
+        return response()->json('Ticket deleted successfully!');
+    }
 }

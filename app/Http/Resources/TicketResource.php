@@ -18,7 +18,7 @@ class TicketResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'user'=> new UserResource($this->resource->user_id),
+            'user'=> $this->resource->user_id,
             'genre_id'=> $this->resource->genre_id
         ];
     }

@@ -10,7 +10,7 @@ class Ticket extends Model
     use HasFactory;
     public function movies()
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsTo(Movie::class);
     }
 
     public function user()
