@@ -16,12 +16,19 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function index()
     {
         $tickets = Ticket::all();
         return TicketResource::collection($tickets);
     }
 
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
